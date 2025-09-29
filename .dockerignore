@@ -1,0 +1,33 @@
+# Git files
+.git
+.gitignore
+
+# Docker files
+Dockerfile
+Dockerfile-Buildx
+docker-compose.yml
+.dockerignore
+
+# Documentation files
+README.md
+*.md
+
+# Build artifacts
+*.exe
+*.exe~
+
+# Development files
+*.log
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# 临时文件
+*.backup
+*.bak
+
+# 图片资源
+img/
