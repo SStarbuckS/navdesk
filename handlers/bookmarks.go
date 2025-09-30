@@ -193,10 +193,21 @@ func (h *BookmarksHandler) CreateBookmark(c *gin.Context) {
 	// 生成唯一ID
 	id := "bookmark_" + fmt.Sprintf("%d", time.Now().UnixNano()) + "_" + strings.ReplaceAll(uuid.New().String()[:8], "-", "")
 
+	// 处理图标设置逻辑
 	icon := req.Icon
 	if icon == "" {
-		icon = "/favicon.ico" // 默认使用网站favicon
+		// 用户留空：使用书签网址拼接 "/favicon.ico"
+		parsedURL, err := url.Parse(req.URL)
+		if err == nil && parsedURL.Host != "" {
+			icon = parsedURL.Scheme + "://" + parsedURL.Host + "/favicon.ico"
+		} else {
+			icon = "/favicon.ico" // 如果URL解析失败，使用默认图标
+		}
+	} else if strings.ToLower(strings.TrimSpace(icon)) == "local" {
+		// 用户输入 "local"：使用默认图标
+		icon = "/favicon.ico"
 	}
+	// 其他情况：保持用户输入的图标URL或上传的本地图标路径
 
 	sort := req.Sort
 	if sort == 0 {
@@ -428,10 +439,21 @@ func (h *BookmarksHandler) UpdateBookmark(c *gin.Context) {
 		}
 	}
 
+	// 处理图标设置逻辑
 	icon := newIconPath
 	if icon == "" {
-		icon = "/favicon.ico" // 默认使用网站favicon
+		// 用户留空：使用书签网址拼接 "/favicon.ico"
+		parsedURL, err := url.Parse(req.URL)
+		if err == nil && parsedURL.Host != "" {
+			icon = parsedURL.Scheme + "://" + parsedURL.Host + "/favicon.ico"
+		} else {
+			icon = "/favicon.ico" // 如果URL解析失败，使用默认图标
+		}
+	} else if strings.ToLower(strings.TrimSpace(icon)) == "local" {
+		// 用户输入 "local"：使用默认图标
+		icon = "/favicon.ico"
 	}
+	// 其他情况：保持用户输入的图标URL或上传的本地图标路径
 
 	// 更新书签信息
 	bookmarks[bookmarkIndex].Name = req.Name

@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>管理员登录 - 后台配置</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/static/css/theme-variables.css">
+    <!-- 防止主题闪烁：在页面渲染前立即应用主题 -->
+    <script src="/static/js/theme-init.js"></script>
     <style>
         * {
             margin: 0;
@@ -12,35 +15,39 @@
             box-sizing: border-box;
         }
 
+        /* 主题变量已通过外部CSS文件引入：/css/theme-variables.css */
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: var(--bg-color);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #333;
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .login-container {
-            background: white;
+            background: var(--card-bg);
             border-radius: 20px;
             padding: 40px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 15px 35px var(--card-shadow);
             width: 100%;
             max-width: 400px;
             text-align: center;
+            transition: background-color 0.3s ease;
         }
 
         .login-title {
             font-size: 28px;
             font-weight: 600;
             margin-bottom: 10px;
-            color: #1a1a1a;
+            color: var(--text-color);
         }
 
         .login-subtitle {
-            color: #666;
+            color: var(--secondary-text);
             margin-bottom: 30px;
             font-size: 14px;
         }
@@ -55,15 +62,17 @@
             margin-bottom: 8px;
             font-size: 14px;
             font-weight: 500;
-            color: #333;
+            color: var(--text-color);
         }
 
         .form-input {
             width: 100%;
             padding: 15px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             font-size: 16px;
+            background: var(--input-bg);
+            color: var(--text-color);
             transition: all 0.3s ease;
             outline: none;
         }
@@ -127,7 +136,7 @@
         .back-home {
             margin-top: 20px;
             padding-top: 20px;
-            border-top: 1px solid #eee;
+            border-top: 1px solid var(--border-color);
         }
 
         .back-home a {
@@ -265,8 +274,39 @@
             }
         }
 
+        // 同步前台主题设置到后台
+        function syncThemeFromFrontend() {
+            const frontendTheme = localStorage.getItem('theme') || 'auto';
+            const html = document.documentElement;
+            
+            if (frontendTheme === 'auto') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                html.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            } else {
+                html.setAttribute('data-theme', frontendTheme);
+            }
+        }
+
+        // 监听localStorage变化，实时同步主题
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'theme') {
+                syncThemeFromFrontend();
+            }
+        });
+
+        // 监听系统主题变化
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            const frontendTheme = localStorage.getItem('theme') || 'auto';
+            if (frontendTheme === 'auto') {
+                syncThemeFromFrontend();
+            }
+        });
+
         // 页面加载时检查登录状态
         document.addEventListener('DOMContentLoaded', () => {
+            // 立即同步前台主题
+            syncThemeFromFrontend();
+            
             checkLoginStatus();
         });
 

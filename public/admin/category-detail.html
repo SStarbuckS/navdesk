@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>分类详情 - 后台配置</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/static/css/theme-variables.css">
+    <!-- 防止主题闪烁：在页面渲染前立即应用主题 -->
+    <script src="/static/js/theme-init.js"></script>
     <style>
         * {
             margin: 0;
@@ -12,20 +15,67 @@
             box-sizing: border-box;
         }
 
+        /* 快捷添加模式：预隐藏页面元素，避免闪烁 */
+        body.quick-add-mode .header,
+        body.quick-add-mode .container {
+            display: none !important;
+        }
+
+        body.quick-add-mode {
+            background: transparent !important;
+            min-height: auto !important;
+            overflow: hidden !important;
+        }
+
+        body.quick-add-mode html {
+            background: transparent !important;
+            overflow: hidden !important;
+        }
+
+        /* 隐藏快捷添加模式下的滚动条（保持滚动功能） */
+        body.quick-add-mode .modal-content {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE 10+ */
+        }
+
+        body.quick-add-mode .modal-content::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        /* 快捷添加模式下的弹窗样式优化 */
+        body.quick-add-mode .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+            background: transparent !important; /* 移除遮罩背景 */
+            backdrop-filter: none !important; /* 移除模糊效果 */
+        }
+
+        /* 快捷添加模式下的弹窗内容 */
+        body.quick-add-mode .modal-content {
+            box-shadow: 0 8px 40px var(--card-shadow-hover);
+        }
+
+        /* 主题变量已通过外部CSS文件引入：/css/theme-variables.css */
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            background: #f8f9fa;
-            color: #333;
+            background: var(--bg-color);
+            color: var(--text-color);
             min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .header {
-            background: white;
-            border-bottom: 1px solid #e0e0e0;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
             padding: 15px 0;
             position: sticky;
             top: 0;
             z-index: 100;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .header-content {
@@ -58,13 +108,13 @@
         .title-text h1 {
             font-size: 24px;
             font-weight: 600;
-            color: #1a1a1a;
+            color: var(--text-color);
             margin-bottom: 2px;
         }
 
         .title-text p {
             font-size: 14px;
-            color: #666;
+            color: var(--secondary-text);
         }
 
         .header-actions {
@@ -97,12 +147,13 @@
         }
 
         .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
+            background: var(--input-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
         }
 
         .btn-secondary:hover {
-            background: #e0e0e0;
+            background: var(--border-color);
         }
 
         .btn-danger {
@@ -127,17 +178,17 @@
         }
 
         .bookmark-card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 16px;
             padding: 20px;
-            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 16px var(--card-shadow);
             transition: all 0.3s ease;
-            border: 1px solid rgba(0, 0, 0, 0.04);
+            border: 1px solid var(--border-color);
         }
 
         .bookmark-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 8px 30px var(--card-shadow-hover);
         }
 
         .bookmark-header {
@@ -168,7 +219,7 @@
         .bookmark-name {
             font-size: 16px;
             font-weight: 600;
-            color: #1a1a1a;
+            color: var(--text-color);
             margin-bottom: 4px;
         }
 
@@ -185,7 +236,7 @@
 
         .bookmark-desc {
             font-size: 14px;
-            color: #666;
+            color: var(--secondary-text);
             line-height: 1.4;
             margin-bottom: 10px;
         }
@@ -198,8 +249,9 @@
         }
 
         .tag {
-            background: #f0f0f0;
-            color: #666;
+            background: var(--input-bg);
+            color: var(--secondary-text);
+            border: 1px solid var(--border-color);
             padding: 4px 8px;
             border-radius: 12px;
             font-size: 12px;
@@ -224,7 +276,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: var(--modal-bg);
             z-index: 1000;
             backdrop-filter: blur(4px);
         }
@@ -236,13 +288,14 @@
         }
 
         .modal-content {
-            background: white;
+            background: var(--card-bg);
             border-radius: 16px;
             padding: 30px;
             width: 90%;
             max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
+            transition: background-color 0.3s ease;
         }
 
         .modal-header {
@@ -255,14 +308,14 @@
         .modal-title {
             font-size: 20px;
             font-weight: 600;
-            color: #1a1a1a;
+            color: var(--text-color);
         }
 
         .modal-close {
             background: none;
             border: none;
             font-size: 24px;
-            color: #666;
+            color: var(--secondary-text);
             cursor: pointer;
             padding: 0;
             width: 30px;
@@ -270,6 +323,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: color 0.3s ease;
         }
 
         .form-group {
@@ -281,15 +335,17 @@
             margin-bottom: 8px;
             font-size: 14px;
             font-weight: 500;
-            color: #333;
+            color: var(--text-color);
         }
 
         .form-input, .form-textarea {
             width: 100%;
             padding: 12px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--input-border);
             border-radius: 8px;
             font-size: 14px;
+            background: var(--input-bg);
+            color: var(--text-color);
             transition: all 0.3s ease;
             outline: none;
             font-family: inherit;
@@ -301,7 +357,7 @@
         }
 
         .form-input:focus, .form-textarea:focus {
-            border-color: #007aff;
+            border-color: var(--input-focus);
             box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
         }
 
@@ -476,9 +532,9 @@
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label" for="bookmarkIcon">图标 <span style="font-weight: normal; color: #666; font-size: 12px;">（留空默认使用本站favicon.ico）</span></label>
+                    <label class="form-label" for="bookmarkIcon">图标 <span style="font-weight: normal; color: #666; font-size: 12px;">（留空使用网址favicon，输入local使用默认图标）</span></label>
                     <div class="icon-input-container">
-                        <input type="text" class="form-input" id="bookmarkIcon" name="icon" placeholder="图标URL 或 上传本地文件，留空使用默认图标">
+                        <input type="text" class="form-input" id="bookmarkIcon" name="icon" placeholder="图标URL、上传本地文件、留空使用网址favicon、输入local使用默认图标">
                         <div class="icon-upload-section">
                             <input type="file" id="bookmarkIconFile" accept="image/*" style="display: none;">
                             <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('bookmarkIconFile').click()">
@@ -831,6 +887,15 @@
                 if (result.success) {
                     hideModal();
                     loadBookmarks();
+                    
+                    // 通知父页面书签添加成功 - 用于快捷添加书签功能
+                    if (window.parent && window.parent !== window) {
+                        try {
+                            window.parent.postMessage({ action: 'bookmarkAdded' }, '*');
+                        } catch (error) {
+                            console.log('无法向父页面发送消息');
+                        }
+                    }
                 } else {
                     alert(result.message || '保存失败');
                 }
@@ -959,12 +1024,110 @@
             }
         });
 
+        // 立即检查并应用快捷添加模式（在页面加载前执行，避免闪烁）
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isQuickAdd = urlParams.get('quickAdd') === 'true';
+            
+            if (isQuickAdd) {
+                // 立即添加CSS类，预隐藏页面元素
+                document.documentElement.classList.add('quick-add-loading');
+                document.body.classList.add('quick-add-mode');
+                
+                // 设置页面样式
+                document.documentElement.style.background = 'transparent';
+                document.body.style.background = 'transparent';
+                document.body.style.minHeight = 'auto';
+                
+                console.log('快捷添加模式：预隐藏样式已应用');
+            }
+        })();
+
+        // 检查是否为快捷添加模式
+        function checkQuickAddMode() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('quickAdd') === 'true';
+        }
+
+        // 快捷添加模式的最终样式调整
+        function finalizeQuickAddMode() {
+            if (checkQuickAddMode()) {
+                // 确保所有元素都被正确隐藏
+                document.body.classList.add('quick-add-mode');
+                
+                // 移除加载状态
+                document.documentElement.classList.remove('quick-add-loading');
+                
+                console.log('快捷添加模式：最终样式已应用');
+            }
+        }
+
+        // 监听来自父页面的消息 - 用于快捷添加书签功能
+        window.addEventListener('message', function(event) {
+            // 检查消息来源的安全性（在生产环境中应该更严格）
+            if (event.data) {
+                // 准备显示书签表单（预加载阶段）
+                if (event.data.action === 'prepareAddModal') {
+                    // 通知父页面内容已准备好，可以显示iframe了
+                    setTimeout(() => {
+                        if (window.parent && window.parent !== window) {
+                            window.parent.postMessage({ action: 'quickAddReady' }, '*');
+                        }
+                    }, 100); // 短暂延迟确保样式完全应用
+                }
+                // 显示书签表单弹窗
+                else if (event.data.action === 'showAddModal') {
+                    setTimeout(() => {
+                        if (typeof showAddModal === 'function') {
+                            showAddModal();
+                        }
+                    }, 100); // 减少延迟时间
+                }
+            }
+        });
+
+        // 同步前台主题设置到后台
+        function syncThemeFromFrontend() {
+            // 从localStorage读取前台的主题设置（与前台使用相同的key）
+            const frontendTheme = localStorage.getItem('theme') || 'auto';
+            const html = document.documentElement;
+            
+            if (frontendTheme === 'auto') {
+                // 检测系统主题
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                html.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            } else {
+                html.setAttribute('data-theme', frontendTheme);
+            }
+        }
+
+        // 监听localStorage变化，实时同步主题（当用户在其他标签页切换主题时）
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'theme') {
+                syncThemeFromFrontend();
+            }
+        });
+
+        // 监听系统主题变化
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            const frontendTheme = localStorage.getItem('theme') || 'auto';
+            if (frontendTheme === 'auto') {
+                syncThemeFromFrontend();
+            }
+        });
+
         // 页面初始化
         document.addEventListener('DOMContentLoaded', async () => {
+            // 立即同步前台主题，避免闪烁
+            syncThemeFromFrontend();
+            
             if (await checkAuth()) {
                 await loadAllCategories();
                 await loadCategory();
                 loadBookmarks();
+                
+                // 完成快捷添加模式的最终设置
+                finalizeQuickAddMode();
             }
         });
     </script>

@@ -44,11 +44,12 @@
 navdesk/
 ├── README.md               # 项目文档
 ├── go.mod                  # Go模块文件
+├── go.sum                  # Go依赖锁定文件
 ├── main.go                 # Go服务器入口
 ├── models/                 # 数据模型
-│   └── models.go
+│   └── models.go            # 数据结构定义
 ├── storage/                # 存储层
-│   └── storage.go
+│   └── storage.go           # JSON文件存储实现
 ├── handlers/               # 路由处理器
 │   ├── auth.go              # 认证处理
 │   ├── categories.go        # 分类管理
@@ -63,13 +64,24 @@ navdesk/
 │   ├── bookmarks.json       # 书签数据
 │   ├── settings.json        # 全局设置
 │   └── uploads/             # 图标上传目录
+│       ├── common/          # 公共图标目录
+│       ├── favicon/         # 网站图标目录
+│       └── [category]/      # 各分类图标目录
 ├── public/                 # 静态文件
+│   ├── css/                 # 样式文件
+│   │   └── theme-variables.css  # 全站主题变量
+│   ├── js/                  # JavaScript文件
+│   │   └── theme-init.js         # 主题初始化脚本
 │   ├── index.html           # 前端展示页面
 │   └── admin/               # 后台管理页面
-├── Dockerfile              # Docker文件
-├── Dockerfile-Buildx       # Docker多平台文件
+│       ├── login.html           # 登录页面
+│       ├── categories.html      # 分类管理
+│       ├── category-detail.html # 书签详情
+│       └── settings.html        # 系统设置
+├── Dockerfile              # Docker单平台构建文件
+├── Dockerfile-Buildx       # Docker多平台构建文件
 ├── docker-compose.yml      # Docker Compose配置
-└── entrypoint.sh           # Docker启动脚本
+└── entrypoint.sh           # Docker容器启动脚本
 ```
 
 ## 快速开始
@@ -137,17 +149,3 @@ services:
 - **前端页面**: http://localhost:3000
 - **后台管理**: http://localhost:3000/admin
 - **默认账号**: admin / 123456
-
-## 配置说明
-
-### 环境变量
-- `PORT` - 服务端口 (默认: 3000)
-- `SESSION_SECRET` - Session密钥 (默认: your-secure-random-key-2025-navdesk-session)
-- `GIN_MODE` - Gin运行模式 (release/debug)
-
-### 数据文件
-所有数据存储在 `data/` 目录下的JSON文件中：
-- `users.json` - 用户账号信息
-- `categories.json` - 分类数据
-- `bookmarks.json` - 书签数据
-- `settings.json` - 系统设置

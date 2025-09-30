@@ -56,9 +56,9 @@ func main() {
 	cookieStore.Options(sessions.Options{
 		Path:     "/",
 		Domain:   "",
-		MaxAge:   30 * 60, // 30分钟
+		MaxAge:   30 * 24 * 60 * 60, // 30天持久化 (30天 * 24小时 * 60分钟 * 60秒)
 		HttpOnly: true,
-		Secure:   true, // 在生产环境中应设为true
+		Secure:   false, // 在生产环境中应设为true
 		SameSite: http.SameSiteDefaultMode,
 	})
 	r.Use(sessions.Sessions("navdesk_session", cookieStore))

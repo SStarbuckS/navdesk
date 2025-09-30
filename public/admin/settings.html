@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>系统设置 - 后台配置</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/static/css/theme-variables.css">
+    <!-- 防止主题闪烁：在页面渲染前立即应用主题 -->
+    <script src="/static/js/theme-init.js"></script>
     <style>
         * {
             margin: 0;
@@ -12,20 +15,24 @@
             box-sizing: border-box;
         }
 
+        /* 主题变量已通过外部CSS文件引入：/css/theme-variables.css */
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            background: #f8f9fa;
-            color: #333;
+            background: var(--bg-color);
+            color: var(--text-color);
             min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .header {
-            background: white;
-            border-bottom: 1px solid #e0e0e0;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
             padding: 15px 0;
             position: sticky;
             top: 0;
             z-index: 100;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .header-content {
@@ -40,7 +47,7 @@
         .header-title {
             font-size: 24px;
             font-weight: 600;
-            color: #1a1a1a;
+            color: var(--text-color);
         }
 
         .header-actions {
@@ -73,12 +80,13 @@
         }
 
         .btn-secondary {
-            background: #f0f0f0;
-            color: #333;
+            background: var(--input-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
         }
 
         .btn-secondary:hover {
-            background: #e0e0e0;
+            background: var(--border-color);
         }
 
         .container {
@@ -88,18 +96,19 @@
         }
 
         .settings-section {
-            background: white;
+            background: var(--card-bg);
             border-radius: 16px;
             padding: 30px;
-            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: 0 2px 16px var(--card-shadow);
+            border: 1px solid var(--border-color);
             margin-bottom: 20px;
+            transition: background-color 0.3s ease;
         }
 
         .section-title {
             font-size: 20px;
             font-weight: 600;
-            color: #1a1a1a;
+            color: var(--text-color);
             margin-bottom: 20px;
             display: flex;
             align-items: center;
@@ -115,21 +124,23 @@
             margin-bottom: 8px;
             font-size: 14px;
             font-weight: 500;
-            color: #333;
+            color: var(--text-color);
         }
 
         .form-input {
             width: 100%;
             padding: 12px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--input-border);
             border-radius: 8px;
             font-size: 14px;
+            background: var(--input-bg);
+            color: var(--text-color);
             transition: all 0.3s ease;
             outline: none;
         }
 
         .form-input:focus {
-            border-color: #007aff;
+            border-color: var(--input-focus);
             box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
         }
 
@@ -141,7 +152,7 @@
 
         .form-description {
             font-size: 12px;
-            color: #666;
+            color: var(--secondary-text);
             margin-top: 4px;
         }
 
@@ -154,17 +165,17 @@
 
         .theme-option {
             padding: 12px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: white;
+            background: var(--input-bg);
         }
 
         .theme-option.active {
             border-color: #007aff;
-            background: #f0f8ff;
+            background: rgba(0, 122, 255, 0.1);
         }
 
         .theme-option:hover {
@@ -179,7 +190,7 @@
         .theme-name {
             font-size: 12px;
             font-weight: 500;
-            color: #333;
+            color: var(--text-color);
         }
 
 
@@ -187,11 +198,12 @@
         .save-section {
             position: sticky;
             bottom: 20px;
-            background: white;
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 20px var(--card-shadow);
             text-align: center;
+            transition: background-color 0.3s ease;
         }
 
         .loading {
@@ -503,8 +515,39 @@
             e.target.value = '';
         });
 
+        // 同步前台主题设置到后台
+        function syncThemeFromFrontend() {
+            const frontendTheme = localStorage.getItem('theme') || 'auto';
+            const html = document.documentElement;
+            
+            if (frontendTheme === 'auto') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                html.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            } else {
+                html.setAttribute('data-theme', frontendTheme);
+            }
+        }
+
+        // 监听localStorage变化，实时同步主题
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'theme') {
+                syncThemeFromFrontend();
+            }
+        });
+
+        // 监听系统主题变化
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            const frontendTheme = localStorage.getItem('theme') || 'auto';
+            if (frontendTheme === 'auto') {
+                syncThemeFromFrontend();
+            }
+        });
+
         // 页面初始化
         document.addEventListener('DOMContentLoaded', async () => {
+            // 立即同步前台主题
+            syncThemeFromFrontend();
+            
             if (await checkAuth()) {
                 await loadSettings();
             }
