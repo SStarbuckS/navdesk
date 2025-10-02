@@ -27,7 +27,6 @@ RUN apk --no-cache add ca-certificates tzdata
 
 # 设置时区
 ENV TZ=Asia/Shanghai
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # 设置工作目录
 WORKDIR /app
