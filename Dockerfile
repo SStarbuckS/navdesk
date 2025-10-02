@@ -22,8 +22,12 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o navdesk .
 # 使用轻量级的 alpine 镜像作为运行环境
 FROM alpine:latest
 
-# 安装 ca-certificates，这对于 HTTPS 请求是必需的
-RUN apk --no-cache add ca-certificates
+# 安装 ca-certificates 和时区数据
+RUN apk --no-cache add ca-certificates tzdata
+
+# 设置时区
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # 设置工作目录
 WORKDIR /app
@@ -45,6 +49,7 @@ RUN chmod +x navdesk
 
 # 设置环境变量
 ENV PORT=3000
+ENV GIN_MODE=release
 
 # 暴露端口
 EXPOSE 3000

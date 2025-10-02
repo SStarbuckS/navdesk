@@ -32,16 +32,6 @@
             overflow: hidden !important;
         }
 
-        /* 隐藏快捷添加模式下的滚动条（保持滚动功能） */
-        body.quick-add-mode .modal-content {
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE 10+ */
-        }
-
-        body.quick-add-mode .modal-content::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
-        }
-
         /* 快捷添加模式下的弹窗样式优化 */
         body.quick-add-mode .modal {
             position: fixed;
@@ -296,6 +286,13 @@
             max-height: 90vh;
             overflow-y: auto;
             transition: background-color 0.3s ease;
+            /* 隐藏滚动条视觉显示（保持滚动功能） */
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE 10+ */
+        }
+
+        .modal-content::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
         }
 
         .modal-header {
@@ -375,7 +372,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 6px;
-            margin-bottom: 8px;
+            margin-top: 8px;
             min-height: 24px;
         }
 
@@ -560,8 +557,8 @@
                 <div class="form-group">
                     <label class="form-label">标签</label>
                     <div class="tags-input-container">
-                        <div class="tags-display" id="tagsDisplay"></div>
                         <input type="text" class="form-input" id="tagInput" placeholder="输入标签后按回车添加">
+                        <div class="tags-display" id="tagsDisplay"></div>
                     </div>
                 </div>
                 

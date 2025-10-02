@@ -338,11 +338,19 @@
             }
         }
 
-        /* 快捷添加书签按钮样式 - 固定在右下角 */
-        .quick-add-bookmark {
+        /* 快捷操作按钮容器 - 固定在右下角 */
+        .quick-actions {
             position: fixed;
             bottom: 30px;
             right: 30px;
+            display: none; /* 默认隐藏，登录后显示 */
+            flex-direction: column;
+            gap: 15px;
+            z-index: 999;
+        }
+
+        /* 快捷操作按钮通用样式 */
+        .quick-action-btn {
             width: 60px;
             height: 60px;
             background: linear-gradient(135deg, #007aff 0%, #0056cc 100%);
@@ -353,18 +361,16 @@
             cursor: pointer;
             box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
             transition: all 0.3s ease;
-            z-index: 999;
-            display: none; /* 默认隐藏，登录后显示 */
             outline: none;
         }
 
-        .quick-add-bookmark:hover {
+        .quick-action-btn:hover {
             transform: scale(1.1);
             box-shadow: 0 6px 30px rgba(0, 122, 255, 0.4);
             background: linear-gradient(135deg, #0056cc 0%, #003d99 100%);
         }
 
-        .quick-add-bookmark:active {
+        .quick-action-btn:active {
             transform: scale(0.95);
         }
 
@@ -432,9 +438,13 @@
 
         /* 移动端适配 */
         @media (max-width: 768px) {
-            .quick-add-bookmark {
+            .quick-actions {
                 bottom: 100px; /* 避免与dock冲突 */
                 right: 20px;
+                gap: 12px;
+            }
+
+            .quick-action-btn {
                 width: 50px;
                 height: 50px;
                 font-size: 20px;
@@ -448,9 +458,13 @@
         }
 
         @media (max-width: 480px) {
-            .quick-add-bookmark {
+            .quick-actions {
                 bottom: 90px;
                 right: 15px;
+                gap: 10px;
+            }
+
+            .quick-action-btn {
                 width: 45px;
                 height: 45px;
                 font-size: 18px;
@@ -497,10 +511,15 @@
         <!-- 分类将通过 JavaScript 动态加载 -->
     </div>
 
-    <!-- 快捷添加书签按钮 - 固定在主内容区域右下角 -->
-    <button class="quick-add-bookmark" id="quickAddBtn" title="快速添加书签">
-        ➕
-    </button>
+    <!-- 快捷操作按钮组 - 固定在主内容区域右下角 -->
+    <div class="quick-actions" id="quickActions">
+        <button class="quick-action-btn" id="quickAddBtn" title="快速添加书签">
+            ➕
+        </button>
+        <button class="quick-action-btn" id="adminEntryBtn" title="进入后台管理">
+            ⚙️
+        </button>
+    </div>
 
     <!-- 快捷添加书签弹窗 -->
     <div class="quick-add-modal" id="quickAddModal">
@@ -544,19 +563,19 @@
             }
         }
 
-        // 显示快捷添加按钮
+        // 显示快捷操作按钮组
         function showQuickAddButton() {
-            const quickAddBtn = document.getElementById('quickAddBtn');
-            if (quickAddBtn) {
-                quickAddBtn.style.display = 'block';
+            const quickActions = document.getElementById('quickActions');
+            if (quickActions) {
+                quickActions.style.display = 'flex';
             }
         }
 
-        // 隐藏快捷添加按钮
+        // 隐藏快捷操作按钮组
         function hideQuickAddButton() {
-            const quickAddBtn = document.getElementById('quickAddBtn');
-            if (quickAddBtn) {
-                quickAddBtn.style.display = 'none';
+            const quickActions = document.getElementById('quickActions');
+            if (quickActions) {
+                quickActions.style.display = 'none';
             }
         }
 
@@ -641,15 +660,15 @@
                         // 图片加载成功，保持背景图片
                     };
                     img.onerror = function() {
-                        // 图片加载失败，显示默认图标
+                        // 图片加载失败，显示文档图标
                         iconElement.style.backgroundImage = '';
                         iconElement.style.background = `linear-gradient(135deg, ${getRandomGradient()})`;
-                        iconElement.textContent = getIconEmoji(bookmark.category);
+                        iconElement.textContent = '📄';
                     };
                     img.src = bookmark.icon;
                 } else {
-                    // 不是图片URL，显示默认图标
-                    iconElement.textContent = getIconEmoji(bookmark.category);
+                    // 不是图片URL，显示文档图标
+                    iconElement.textContent = '📄';
                 }
                 
                 card.innerHTML = `
@@ -715,19 +734,6 @@
                 '#00b894 0%, #00cec9 100%'
             ];
             return gradients[Math.floor(Math.random() * gradients.length)];
-        }
-
-        // 根据分类获取默认图标
-        function getIconEmoji(category) {
-            const icons = {
-                'all': '🏠',
-                'tools': '🔧',
-                'design': '🎨',
-                'entertainment': '🎵',
-                'learning': '📚',
-                'shopping': '🛍️'
-            };
-            return icons[category] || '📄';
         }
 
         // 搜索功能
@@ -898,11 +904,19 @@
         // 初始化快捷添加功能事件监听
         function initQuickAddEvents() {
             const quickAddBtn = document.getElementById('quickAddBtn');
+            const adminEntryBtn = document.getElementById('adminEntryBtn');
             const modal = document.getElementById('quickAddModal');
             
             // 快捷添加按钮点击事件
             if (quickAddBtn) {
                 quickAddBtn.addEventListener('click', showQuickAddModal);
+            }
+            
+            // 进入后台按钮点击事件
+            if (adminEntryBtn) {
+                adminEntryBtn.addEventListener('click', function() {
+                    window.open('/admin/categories.html', '_blank');
+                });
             }
             
             // 点击弹窗背景关闭

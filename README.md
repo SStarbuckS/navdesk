@@ -135,9 +135,6 @@ services:
     restart: always
     ports:
       - "3000:3000"
-    environment:
-      TZ: Asia/Shanghai
-      GIN_MODE: release   # 生产模式 默认debug
     volumes:
       - ./data:/app/data
 ``` 

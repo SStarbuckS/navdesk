@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
-	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
@@ -255,21 +254,21 @@ func main() {
 	})
 
 	// 启动服务器
-	log.Printf("[%s] 服务器启动成功 - 端口: %s", time.Now().Format(time.RFC3339), port)
-	log.Printf("[%s] 前端页面: http://localhost:%s", time.Now().Format(time.RFC3339), port)
-	log.Printf("[%s] 后台管理: http://localhost:%s/admin", time.Now().Format(time.RFC3339), port)
+	log.Printf("服务器启动成功 - 端口: %s", port)
+	log.Printf("前端页面: http://localhost:%s", port)
+	log.Printf("后台管理: http://localhost:%s/admin", port)
 
 	// 检查是否使用默认密码
 	users, err := store.GetUsers()
 	if err == nil {
 		if adminUser, exists := users["admin"]; exists && adminUser.Password == "123456" {
-			log.Printf("[%s] 默认账号: admin / 123456，请在 data/users.json 中修改密码！", time.Now().Format(time.RFC3339))
+			log.Printf("默认账号: admin / 123456，请在 data/users.json 中修改密码！")
 		}
 	}
 
 	// 安全提示
 	if secretKey == "your-secure-random-key-2025-navdesk-session" {
-		log.Printf("[%s] 安全警告: 正在使用默认secretKey，请在 data/users.json 中修改为随机安全的值！", time.Now().Format(time.RFC3339))
+		log.Printf("安全警告: 正在使用默认secretKey，请在 data/users.json 中修改为随机安全的值！")
 	}
 
 	if err := r.Run(":" + port); err != nil {

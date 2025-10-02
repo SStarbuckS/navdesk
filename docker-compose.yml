@@ -5,8 +5,7 @@ services:
     restart: always
     ports:
       - "3000:3000"
-    environment:
-      TZ: Asia/Shanghai
-      GIN_MODE: release   # 生产模式 默认debug
+    # environment:
+    #   GIN_MODE: release   # 默认已在镜像中设置为 release，如需调试可改为 debug
     volumes:
       - ./data:/app/data
